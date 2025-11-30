@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نباهة - نظام نقاط المخاطر للهوية الرقمية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --olive-green: #556b2f;
+      --olive-dark: #3d4f1f;
+      --olive-light: #6b8550;
+      --yellow: #ffd700;
+      --yellow-light: #ffed4e;
+      --white: #ffffff;
+      --green-main: #00823a;
+      --green-light: #e6f5ec;
+      --green-mid: #35a86a;
+      --green-dark: #006b2e;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --orange: #ff6b35;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-800: #1f2937;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Cairo", "Segoe UI", "Tajawal", Tahoma, sans-serif;
+      background: linear-gradient(135deg, var(--olive-green) 0%, var(--olive-dark) 100%);
+      background-attachment: fixed;
+      color: var(--white);
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: rgba(85, 107, 47, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-left,
+    .logo-right {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logo-left {
+      align-items: flex-start;
+    }
+
+    .logo-right {
+      align-items: flex-end;
+    }
+
+    .logo-text {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-subtext {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    .hackathon-tag {
+      background: linear-gradient(135deg, var(--orange) 0%, #ff8c5a 100%);
+      color: var(--white);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 140px 40px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-title {
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 800;
+      color: var(--white);
+      margin: 0 0 20px 0;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      letter-spacing: 1px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .subtitle {
+      font-size: clamp(1.2rem, 3vw, 2.2rem);
+      color: var(--yellow);
+      font-weight: 600;
+      margin: 0 0 50px 0;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .page {
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 28px;
+      padding: 50px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+      animation: scaleIn 0.8s ease-out 0.4s both;
+      z-index: 1;
+    }
+
+    .page::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--green-light) 0%, transparent 70%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 3px solid var(--gray-200);
+      position: relative;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      color: var(--olive-dark);
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--green-light) 0%, #d4f0e0 100%);
+      color: var(--green-main);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid rgba(0, 130, 58, 0.15);
+      letter-spacing: 0.5px;
+    }
+
+    .section-title {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      margin: 40px 0 28px 0;
+      color: var(--olive-dark);
+      font-weight: 700;
+      position: relative;
+      padding-right: 20px;
+      display: inline-block;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--green-main) 0%, var(--green-mid) 100%);
+      border-radius: 3px;
+    }
+
+    .risk-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gray-50) 100%);
+      padding: 50px;
+      border-radius: 24px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-md);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      align-items: start;
+    }
+
+    .risk-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--green-main) 0%, var(--green-mid) 100%);
+    }
+
+    .simulation-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .score-circle {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 18px solid var(--gray-300);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-md);
+    }
+
+    .score-circle.low {
+      border-color: var(--green-main);
+      box-shadow: 0 0 30px rgba(0, 130, 58, 0.2);
+    }
+
+    .score-circle.medium {
+      border-color: var(--warning);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+    }
+
+    .score-circle.high {
+      border-color: var(--danger);
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+    }
+
+    .score-value {
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1;
+      transition: color 0.5s ease;
+    }
+
+    .score-circle.low .score-value {
+      color: var(--green-main);
+    }
+
+    .score-circle.medium .score-value {
+      color: var(--warning);
+    }
+
+    .score-circle.high .score-value {
+      color: var(--danger);
+    }
+
+    .score-label {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--gray-800);
+      font-size: 1rem;
+    }
+
+    .form-group select,
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-300);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-group select:focus,
+    .form-group input[type="number"]:focus {
+      outline: none;
+      border-color: var(--green-main);
+      box-shadow: 0 0 0 3px rgba(0, 130, 58, 0.1);
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--green-main) 0%, var(--green-mid) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      font-family: inherit;
+    }
+
+    .calculate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .calculate-btn:active {
+      transform: translateY(0);
+    }
+
+    .calculate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .evaluation-details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .evaluation-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .evaluation-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--green-light) 0%, #d4f0e0 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .evaluation-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--green-main);
+    }
+
+    .evaluation-header h3 {
+      color: var(--olive-dark);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .score-status {
+      font-size: 1.1rem;
+      color: var(--gray-800);
+      font-weight: 600;
+    }
+
+    .score-action {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+      padding: 20px;
+      border-radius: 12px;
+      border-right: 4px solid var(--green-main);
+      color: var(--gray-800);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .pill.low {
+      background: linear-gradient(135deg, var(--green-light) 0%, #d4f0e0 100%);
+      color: var(--green-main);
+      border: 2px solid rgba(0, 130, 58, 0.2);
+    }
+
+    .pill.medium {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      color: #b45309;
+      border: 2px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .pill.high {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      color: var(--danger);
+      border: 2px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .flow {
+      background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
+      border: 2px solid var(--gray-200);
+      border-radius: 18px;
+      padding: 28px;
+      font-size: 1.05rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+    }
+
+    .flow:hover {
+      border-color: var(--green-mid);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .flow strong {
+      display: block;
+      margin-bottom: 24px;
+      color: var(--olive-dark);
+      font-size: 1.3rem;
+      font-weight: 800;
+      padding-bottom: 16px;
+      border-bottom: 3px solid var(--gray-200);
+    }
+
+    .flow ul {
+      margin: 0;
+      padding-right: 0;
+      list-style: none;
+    }
+
+    .flow ul li {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-200);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 1.1rem;
+    }
+
+    .flow ul li:last-child {
+      border-bottom: none;
+    }
+
+    .flow ul li:hover {
+      padding-right: 12px;
+      color: var(--green-main);
+      font-weight: 600;
+    }
+
+    .flow ul li::before {
+      content: '✓';
+      color: var(--green-main);
+      font-weight: bold;
+      font-size: 1.3rem;
+      background: var(--green-light);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .loading-indicator {
+      text-align: center;
+      padding: 20px;
+      color: var(--green-main);
+      font-weight: 600;
+      display: none;
+    }
+
+    .loading-indicator.active {
+      display: block;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: var(--danger);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+      display: none;
+      border-right: 4px solid var(--danger);
+    }
+
+    .error-message.active {
+      display: block;
+    }
+
+    @media (max-width: 968px) {
+      .risk-card {
+        grid-template-columns: 1fr;
+        padding: 32px;
+        gap: 40px;
+      }
+
+      .score-circle {
+        width: 180px;
+        height: 180px;
+        border-width: 14px;
+      }
+
+      .score-value {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-left">
+      <div class="logo-text">أكاديمية طويق</div>
+      <div class="logo-subtext">Tuwaiq Academy</div>
+    </div>
+    <div class="logo-right">
+      <div class="hackathon-tag">هاكاتون</div>
+      <div class="logo-text">أبشر طويق</div>
+    </div>
+  </header>
+
+  <main class="hero-section">
+    <h1 class="main-title">Nabahah - نباهة</h1>
+    <p class="subtitle">نظام نقاط المخاطر للهوية الرقمية</p>
+
+    <section class="page">
+      <div class="page-header">
+        <h1>
+          نظام مؤشر المخاطر
+          <span class="badge">0 – 100</span>
+        </h1>
+      </div>
+
+      <section class="simulation-section">
+        <h2 class="section-title">حساب المؤشر التلقائي</h2>
+        <div class="risk-card">
+          <div class="simulation-controls">
+            <div id="scoreCircle" class="score-circle medium">
+              <div id="scoreValue" class="score-value">--</div>
+              <div id="scoreLabel" class="score-label">أدخل البيانات لحساب المخاطر</div>
+            </div>
+
+            <form id="riskForm">
+              <div class="form-group">
+                <label for="deviceType">نوع الجهاز:</label>
+                <select id="deviceType" name="device_type" required>
+                  <option value="1">جهاز معروف</option>
+                  <option value="0">جهاز غير معروف</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="locationMatch">تطابق الموقع:</label>
+                <select id="locationMatch" name="location_match" required>
+                  <option value="1">موقع مطابق</option>
+                  <option value="0">موقع غير مطابق</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="timeAnomaly">شذوذ في الوقت:</label>
+                <select id="timeAnomaly" name="time_anomaly" required>
+                  <option value="0">وقت عادي</option>
+                  <option value="1">وقت غير عادي</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="transactionSensitivity">حساسية المعاملة:</label>
+                <select id="transactionSensitivity" name="transaction_sensitivity" required>
+                  <option value="0">منخفضة</option>
+                  <option value="1">متوسطة</option>
+                  <option value="2">مرتفعة</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="failedAttempts">عدد المحاولات الفاشلة:</label>
+                <input type="number" id="failedAttempts" name="recent_failed_attempts" min="0" max="10" value="0" required>
+              </div>
+
+              <button type="submit" class="calculate-btn" id="calculateBtn">
+                احسب مؤشر المخاطر
+              </button>
+
+              <div class="loading-indicator" id="loadingIndicator">
+                جاري الحساب...
+              </div>
+
+              <div class="error-message" id="errorMessage"></div>
+            </form>
+          </div>
+
+          <div class="evaluation-details">
+            <div class="evaluation-header">
+              <div class="evaluation-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 4v8.82c0 4.54-3.07 8.83-8 9.81-4.93-.98-8-5.27-8-9.81V8.18l8-4zm0 2.36L6 9.5v7.5c0 3.32 2.25 6.44 6 7.37 3.75-.93 6-4.05 6-7.37V9.5l-6-2.96z"/>
+                  <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/>
+                </svg>
+              </div>
+              <h3>تقييم المخاطر</h3>
+            </div>
+            
+            <p class="score-status">
+              الحالة الحالية: <span id="levelPill" class="pill medium">--</span>
+            </p>
+            
+            <p id="scoreAction" class="score-action">
+              سيتم عرض التوصية بعد الحساب
+            </p>
+
+            <div class="flow">
+              <strong>منطق القرار:</strong>
+              <ul>
+                <li><span class="pill low">0–39</span> تنفيذ مباشر.</li>
+                <li><span class="pill medium">40–74</span> تحقق إضافي.</li>
+                <li><span class="pill high">75–100</span> إيقاف ومراجعة.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    // API Configuration - يعمل محلياً وعلى Railway
+    const API_URL = window.location.origin + '/api/calculate-risk';
+
+    // DOM Elements
+    const form = document.getElementById('riskForm');
+    const scoreValue = document.getElementById('scoreValue');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const scoreCircle = document.getElementById('scoreCircle');
+    const scoreAction = document.getElementById('scoreAction');
+    const levelPill = document.getElementById('levelPill');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+    const calculateBtn = document.getElementById('calculateBtn');
+
+    // Update UI with risk score
+    function updateRiskDisplay(data) {
+      const score = data.risk_score;
+      const level = data.level;
+      const level_ar = data.level_ar;
+      const recommendation = data.recommendation;
+
+      scoreValue.textContent = score;
+      levelPill.textContent = level_ar;
+      scoreAction.textContent = recommendation;
+
+      // Update labels based on level
+      let label;
+      if (level === 'low') {
+        label = 'درجة ثقة عالية (مخاطر منخفضة)';
+      } else if (level === 'medium') {
+        label = 'درجة ثقة متوسطة';
+      } else {
+        label = 'درجة ثقة منخفضة (مخاطر مرتفعة)';
+      }
+
+      scoreLabel.textContent = label;
+      scoreCircle.className = `score-circle ${level}`;
+      levelPill.className = `pill ${level}`;
+    }
+
+    // Show error message
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add('active');
+      setTimeout(() => {
+        errorMessage.classList.remove('active');
+      }, 5000);
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Disable button and show loading
+      calculateBtn.disabled = true;
+      loadingIndicator.classList.add('active');
+      errorMessage.classList.remove('active');
+
+      // Get form data
+      const formData = new FormData(form);
+      const data = {
+        device_type: parseInt(formData.get('device_type')),
+        location_match: parseInt(formData.get('location_match')),
+        time_anomaly: parseInt(formData.get('time_anomaly')),
+        transaction_sensitivity: parseInt(formData.get('transaction_sensitivity')),
+        recent_failed_attempts: parseInt(formData.get('recent_failed_attempts'))
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error('فشل الاتصال بالخادم');
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          updateRiskDisplay(result);
+        } else {
+          throw new Error(result.error || 'حدث خطأ غير متوقع');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showError('تعذر الاتصال بخادم الحسابات. تأكد من تشغيل الـ API');
+        
+        // Fallback: Calculate locally if API is not available
+        const localScore = calculateLocalRisk(data);
+        updateRiskDisplay(localScore);
+      } finally {
+        calculateBtn.disabled = false;
+        loadingIndicator.classList.remove('active');
+      }
+    });
+
+    // Fallback: Simple local calculation
+    function calculateLocalRisk(data) {
+      let score = 0;
+      
+      // Device type
+      score += data.device_type === 0 ? 25 : 0;
+      
+      // Location match
+      score += data.location_match === 0 ? 20 : 0;
+      
+      // Time anomaly
+      score += data.time_anomaly === 1 ? 15 : 0;
+      
+      // Transaction sensitivity
+      score += data.transaction_sensitivity * 15;
+      
+      // Failed attempts
+      score += data.recent_failed_attempts * 5;
+
+      score = Math.min(100, Math.max(0, score));
+
+      let level, level_ar, recommendation;
+      if (score <= 39) {
+        level = 'low';
+        level_ar = 'منخفض';
+        recommendation = 'تنفيذ مباشر - لا توجد مخاطر';
+      } else if (score <= 74) {
+        level = 'medium';
+        level_ar = 'متوسط';
+        recommendation = 'يتطلب تحقق إضافي (OTP، بصمة)';
+      } else {
+        level = 'high';
+        level_ar = 'مرتفع';
+        recommendation = 'إيقاف العملية ومراجعة أمنية';
+      }
+
+      return {
+        success: true,
+        risk_score: score,
+        level: level,
+        level_ar: level_ar,
+        recommendation: recommendation
+      };
+    }
+
+    // Auto-calculate on input change for demo purposes
+    const inputs = form.querySelectorAll('select, input');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        // Optional: Auto-submit on change
+        // form.dispatchEvent(new Event('submit'));
+      });
+    });
+  </script>
+</body>
+</html>
